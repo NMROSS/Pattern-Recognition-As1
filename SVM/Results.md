@@ -1,6 +1,7 @@
 # Results
 
 ## Pipeline of `StandardScaler` and `SVC(rbf)`
+- Default parameters
 - Linear SVM accuracy train: 0.987
 - Linear SVM accuracy test: 0.966
 - Confusion matrix: (column = predicted, row = actual)
@@ -18,6 +19,7 @@
   ```
 
 ## `SVC(rbf)`
+- Default parameters
 - Linear SVM accuracy train: 0.9899166666666667
 - Linear SVM accuracy test: 0.9792
 - Confusion matrix:
@@ -34,6 +36,22 @@
     3    4    1    7   10    2    1    7    4  970
   ```
 
-## `SVC(sigmoid)`
-
 ## `LinearSVC`
+- Not converging fast enough with different C (my CPU is not that great)
+- The longest run had approx 88% accuracy for both train and test set.
+
+## Grid search of `SVC(rbf)`
+- C = [0.001, 0.01, 0.1, 1, 10, 100]
+- gamma = [0.001, 0.01, 0.1, 1, 'scale', 'auto']
+- For the grid search we decreased the training set size to only 3000 entries
+  as it takes a lot of computation with an upper bound of `O(n³)`.
+  
+  The best parameters were found to be `C = 10` and `gamma = 'scale'`.
+- For the real fit we then took the original training set with the above found parameters.
+- Linear SVM accuracy train: 0.9999
+- Linear SVM accuracy test: 0.9837
+
+This SVC with above parameters is therefore superior to the other trained classifiers.
+
+![Confusion matrix, without normalization](./confusion_matrix.png)
+![Normalized confusion matrix](./normalized_confusion_matrix.png)
