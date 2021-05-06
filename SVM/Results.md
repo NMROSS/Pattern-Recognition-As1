@@ -20,8 +20,8 @@
 
 ## `SVC(rbf)`
 - Default parameters
-- Linear SVM accuracy train: 0.9899166666666667
-- Linear SVM accuracy test: 0.9792
+- Linear SVM accuracy train: 0.990
+- Linear SVM accuracy test: 0.979
 - Confusion matrix:
   ```   
   973    0    1    0    0    2    1    1    2    0
