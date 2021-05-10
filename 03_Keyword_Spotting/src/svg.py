@@ -13,7 +13,7 @@ class Path:
         self.id = id
         self.points = points
 
-    def outer_box(self):
+    def bounding_box(self):
         return Box(self.points.min(), self.points.max())
 
     def __str__(self):
@@ -55,4 +55,4 @@ class SVG:
         self.paths = paths
 
     def __str__(self):
-        return "{}".format(self.paths.__str__())
+        return self.paths.__str__()

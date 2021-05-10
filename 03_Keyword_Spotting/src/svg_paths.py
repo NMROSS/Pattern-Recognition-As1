@@ -1,6 +1,13 @@
 from svg import *
+from skimage import io
+import matplotlib.pyplot as plt
 
-file_path = "../res/ground-truth/locations/270.svg"
-svg = SVG(file_path)
+p270svg = "../res/ground-truth/locations/270.svg"
+p270jpg = "../res/images/270.jpg"
+
+svg = SVG(p270svg)
+jpg = io.imread(p270jpg)
+
+plt.imshow(jpg)
 
 print(svg)
