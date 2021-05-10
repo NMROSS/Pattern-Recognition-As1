@@ -1,4 +1,6 @@
-from svgpathtools import svg2paths
+from svg import *
 
+file_path = "../res/ground-truth/locations/270.svg"
+svg = SVG(file_path)
 
-path, attributes = svg2paths()
+print(svg)
