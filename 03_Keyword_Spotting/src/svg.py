@@ -7,6 +7,9 @@ class Box:
         self.min = min
         self.max = max
 
+    def __str__(self):
+        return "[min: {}, max: {}]".format(self.min, self.max)
+
 
 class Path:
     def __init__(self, id: str, points: np.array):
@@ -14,7 +17,7 @@ class Path:
         self.points = points
 
     def bounding_box(self):
-        return Box(self.points.min(), self.points.max())
+        return Box(self.points.min(0), self.points.max(0))
 
     def __str__(self):
         return "{} {}".format(self.id, self.points)
@@ -44,6 +47,7 @@ class SVG:
                     else:
                         point[1] = val
                         points.append(point)
+                        point = np.array([0, 0])
 
                     is_x = not is_x
                 except ValueError:
