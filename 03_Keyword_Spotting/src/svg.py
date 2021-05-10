@@ -85,18 +85,18 @@ class SVG:
 
         self.paths = paths
 
-    def words(self, img):
+    def words_masks(self, img):
         words = []
+        masks = []
 
         for path in self.paths:
             box, mask = path.box_and_mask()
             x, y = box.as_slice()
 
-            sub_image = img[y, x] | ~mask.T
+            words.append(img[y, x])
+            masks.append(mask.T)
 
-            words.append(sub_image)
-
-        return np.array(words)
+        return np.array(words), np.array(masks)
 
     def __str__(self):
         return self.paths.__str__()
