@@ -58,14 +58,14 @@ class Signature:
 
         self.t = t
         self.x = x
-        self.y = minmax_scale(y, feature_range=(-1, 1))
-        self.pressure = minmax_scale(pressure, feature_range=(0, 1))
+        self.y = y
+        self.pressure = pressure
         self.penup = penup
         self.azimuth = azimuth
         self.inclination = inclination
         self.is_fake = is_fake
 
-    def dtw(self):
+    def normalise(self):
         size = self.x.shape[0] - 1
         vx = np.empty(size)
         vy = np.empty(size)
@@ -80,7 +80,7 @@ class Signature:
             dy = self.y[next] - self.y[curr]
             vy[curr] = dy / dt
 
-        SignatureDTW(
+        return SignatureDTW(
             minmax_scale(self.x, feature_range=(-1, 1)),
             minmax_scale(self.y, feature_range=(-1, 1)),
             minmax_scale(vx, feature_range=(-1, 1)),
