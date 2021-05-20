@@ -11,49 +11,46 @@ VERIFICATION = RESOURCES + "verification/"
 USERS = RESOURCES + "users.txt"
 GT = RESOURCES + "gt.txt"
 
-# ENROLLMENT_SIGNATURES_PER_USER = 5
-# SIGNATURES_PER_USER = 45
+ENROLLMENT_SIGNATURES_PER_USER = 5
+VERIFICATION_SIGNATURES_PER_USER = 45
 
 
-def read_enrollment_users() -> dict:
+def read_enrollment_users() -> np.array:
     """
-    Reads the enrollment dataset into a dictionary of
+    Reads the enrollment dataset into a numpy array of :class:`User`.
 
-    * { id: int, :class:`User` }
-
-    with their corresponding signatures of which all are **not fake**.
-
-    :return: dict { id: int, User }
+    :return: Array of users
     """
 
-    users = read_users()
+    users = read_users(ENROLLMENT_SIGNATURES_PER_USER)
 
     entries = os.scandir(ENROLLMENT)
     for entry in entries:
         if entry.is_dir():
             continue
 
-        id = int(entry.name.split("-", 1)[0])
-        user = users[id]
+        file_name: str = entry.name.split(".")[0]
+        id_split = file_name.split("-")
 
-        signature = read_from_file(entry.path)
-        user.signatures = np.append(user.signatures, signature)
+        user_id = int(id_split[0])
+        # split[1] == g, not useful
+        signature_id = int(id_split[2])
+        user = users[user_id - 1]  # important offset
+
+        signature = read_from_file(entry.path, signature_id)
+        user.signatures[signature_id - 1] = signature  # important offset
 
     return users
 
 
-def read_verification_users() -> dict:
+def read_verification_users() -> np.array:
     """
-    Reads the verification dataset into a dictionary of
+    Reads the verification dataset into a numpy array of :class:`User`.
 
-    * { id: int, :class:`User` }
-
-    with their corresponding signatures of which some are fake.
-
-    :return: dict { id: int, User }
+    :return: Array of users
     """
 
-    users = read_users()
+    users = read_users(VERIFICATION_SIGNATURES_PER_USER)
     gt = read_gt()
 
     entries = os.scandir(VERIFICATION)
@@ -61,19 +58,28 @@ def read_verification_users() -> dict:
         if entry.is_dir():
             continue
 
-        name: str = entry.name.split(".")[0]
-        id = int(name.split("-")[0])
-        user = users[id]
+        file_name: str = entry.name.split(".")[0]
+        id_split = file_name.split("-")
 
-        signature = read_from_file(entry.path)
-        signature.is_fake = gt[name]
+        user_id = int(id_split[0])
+        signature_id = int(id_split[1])
+        user = users[user_id - 1]  # important offset
 
-        user.signatures = np.append(user.signatures, signature)
+        signature = read_from_file(entry.path, signature_id)
+        signature.is_fake = gt[file_name]
+        user.signatures[signature_id - 1] = signature  # important offset
 
     return users
 
 
 def read_gt() -> dict:
+    """
+    Reads in the ground-truth file. The returned dictionary consists of
+
+    * { id: "$user_id-$signature-id", is_fake: bool }
+
+    :return: Dictionary of ground truth data
+    """
     lines = open(GT, "r").readlines()
 
     gt = {}
@@ -87,15 +93,22 @@ def read_gt() -> dict:
     return gt
 
 
-def read_users() -> dict:
+def read_users(num_signatures: int = 0) -> np.array:
+    """
+    Reads in the users file and allocates user data with the given number of signatures.
+
+    :param num_signatures: The number of signatures to pre-allocate for the user
+    :return: Array of users
+    """
+
     lines = open(USERS, 'r').readlines()
 
-    users = {}
+    users = np.empty(shape=len(lines), dtype=User)
     for i in range(len(lines)):
         id = int(lines[i])
-        signatures = np.empty(shape=0, dtype=Signature)
+        signatures = np.empty(shape=num_signatures, dtype=Signature)
 
-        users[id] = User(id, signatures)
+        users[id - 1] = User(id, signatures)  # important offset
 
     return users
 

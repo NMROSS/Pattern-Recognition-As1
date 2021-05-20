@@ -4,10 +4,7 @@ from users import *
 
 users = read_enrollment_users()
 
-for id in users:
-    user = users[id]
-    print(user)
+for u in users:
+    print("User:\t", u)
 
-    if len(user.signatures) != 0:
-        print(user.signatures[0].t)
-        break
+    print("Signatures: \t", u.signatures, "\n")

@@ -2,8 +2,15 @@ import numpy as np
 from sklearn.preprocessing import minmax_scale
 
 
-def read_from_file(file: str):
-    with open(file, 'r') as f:
+def read_from_file(path: str, signature_id: int):
+    """
+    Reads a signature from a given path with given ID.
+
+    :param path: The path of the file to parse
+    :param signature_id: The ID of the signature
+    :return: Signature
+    """
+    with open(path, 'r') as f:
         raw_lines = f.readlines()
 
         lines = np.zeros([len(raw_lines), 7], dtype=np.float32)
@@ -21,7 +28,7 @@ def read_from_file(file: str):
         azimuth = lines[:, 5]
         inclination = lines[:, 6]
 
-        return Signature(t, x, y, pressure, penup, azimuth, inclination)
+        return Signature(signature_id, t, x, y, pressure, penup, azimuth, inclination)
 
 
 class Signature:
@@ -40,6 +47,7 @@ class Signature:
 
     def __init__(
             self,
+            id: int,
             t: np.array,
             x: np.array,
             y: np.array,
@@ -56,6 +64,7 @@ class Signature:
         assert len(t) == len(azimuth)
         assert len(t) == len(inclination)
 
+        self.id = id
         self.t = t
         self.x = x
         self.y = y
@@ -65,7 +74,7 @@ class Signature:
         self.inclination = inclination
         self.is_fake = is_fake
 
-    def normalise(self):
+    def to_dtw(self):
         size = self.x.shape[0] - 1
         vx = np.empty(size)
         vy = np.empty(size)
@@ -81,6 +90,7 @@ class Signature:
             vy[curr] = dy / dt
 
         return SignatureDTW(
+            self.id,
             minmax_scale(self.x, feature_range=(-1, 1)),
             minmax_scale(self.y, feature_range=(-1, 1)),
             minmax_scale(vx, feature_range=(-1, 1)),
@@ -103,6 +113,7 @@ class SignatureDTW:
 
     def __init__(
             self,
+            id: int,
             x: np.array,
             y: np.array,
             vx: np.array,
@@ -114,6 +125,7 @@ class SignatureDTW:
         assert len(x) == len(pressure)
         assert len(vx) == len(vy)
 
+        self.id = id
         self.x = x
         self.y = y
         self.vx = vx
