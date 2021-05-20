@@ -6,10 +6,10 @@ def read_from_file(file: str):
     with open(file, 'r') as f:
         raw_lines = f.readlines()
 
-        lines = np.zeros([len(raw_lines), 7], dtype=np.float32)
+        lines = np.zeros([len(raw_lines), 7], dtype=np.double)
 
         for i in range(len(raw_lines)):
-            line = np.fromstring(raw_lines[i], dtype=np.float32, sep=" ")
+            line = np.fromstring(raw_lines[i], dtype=np.double, sep=" ")
             assert line.shape[0] == 7
             lines[i] = line
 
