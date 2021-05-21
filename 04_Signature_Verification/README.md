@@ -1,5 +1,5 @@
 # Installing
-`pip install -r requirement.txt`
+`pip install -r requirements.txt`
 
 **NOTE**
 The dtaidistance packages need to be bundled with a c-library binary, depending on the system installed it maybe bundled on your distribution
