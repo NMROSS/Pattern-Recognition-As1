@@ -13,7 +13,7 @@ for i in range(1, num_users):
 
     correct = 0
     for test_sig in signatures_test:
-        prediction = predict_fake(test_sig, signatures_real, threshold=4)
+        prediction = predict_fake(test_sig, signatures_real, threshold=4, verbose=False)
         if prediction:
             correct += 1
 

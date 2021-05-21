@@ -13,10 +13,10 @@ def read_from_file(path: str, signature_id: int):
     with open(path, 'r') as f:
         raw_lines = f.readlines()
 
-        lines = np.zeros([len(raw_lines), 7], dtype=np.float32)
+        lines = np.zeros([len(raw_lines), 7], dtype=np.double)
 
         for i in range(len(raw_lines)):
-            line = np.fromstring(raw_lines[i], dtype=np.float32, sep=" ")
+            line = np.fromstring(raw_lines[i], dtype=np.double, sep=" ")
             assert line.shape[0] == 7
             lines[i] = line
 
@@ -98,6 +98,13 @@ class Signature:
             minmax_scale(self.pressure, feature_range=(0, 1)),
             self.is_fake,
         )
+
+    def features(self) -> (np.array, np.array):
+        """
+        Returns selected feature combinations e.g. (x, y) OR (vx, vy, pressure)
+        Values are normalised
+        """
+        return self.to_dtw().x, self.to_dtw().y
 
 
 class SignatureDTW:
