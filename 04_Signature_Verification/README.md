@@ -1,3 +1,14 @@
+# Installing
+`pip install -r requirement.txt`
+
+**NOTE**
+The dtaidistance packages need to be bundled with a c-library binary, depending on the system installed it maybe bundled on your distribution
+if not run ...
+`pip install -vvv --upgrade --force-reinstall --no-deps --no-binary :all: dtaidistance`
+
+https://dtaidistance.readthedocs.io/en/latest/usage/installation.html
+
+
 # Code layout
 
 To read in the datasets and work with it, some helper classes and methods are provided:
