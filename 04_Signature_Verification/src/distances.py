@@ -24,6 +24,7 @@ def calculate_distance(signature_test, signatures_real) -> np.array:
     return distances
 
 
+# TODO: Can we have a smal documentation what treshold exactly is here?
 def predict_fake(unverified_signatures, real_signatures, threshold=4, verbose=False):
     # compare signature against all genuine
     distances = calculate_distance(unverified_signatures, real_signatures)
@@ -31,7 +32,7 @@ def predict_fake(unverified_signatures, real_signatures, threshold=4, verbose=Fa
     distances_mean = np.mean(distances)
 
     # classify signature as genuine if less the threshold set
-    prediction = False if distances_mean < threshold else True
+    prediction = distances_mean >= threshold
 
     # compare our prediction with ground truth
     correct_prediction = prediction == unverified_signatures.is_fake
