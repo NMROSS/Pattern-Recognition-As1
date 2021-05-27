@@ -42,3 +42,18 @@ def predict_fake(unverified_signatures, real_signatures, threshold=4, verbose=Fa
         print('Ground Truth = {0}, Predicted = {1}'.format(unverified_signatures.is_fake, prediction))
 
     return correct_prediction
+
+def predict(unverified_signatures, real_signatures, threshold=4):
+    """
+    The same as predict_fake, but returns whether the signature is predicted to be fake, not whether this prediction is
+    correct
+    """
+    # compare signature against all genuine
+    distances = calculate_distance(unverified_signatures, real_signatures)
+
+    distances_mean = np.mean(distances)
+
+    # classify signature as genuine if less the threshold set
+    prediction = distances_mean >= threshold
+
+    return prediction

@@ -11,7 +11,7 @@ num_users = len(users)
 
 # evaluation variables
 gt = list(read_gt().values())
-thresholds = np.arange(start=6, stop=9, step=0.5)
+thresholds = np.arange(start=1.5, stop=9, step=0.5)
 precisions = []
 recalls = []
 APs = []
@@ -26,17 +26,17 @@ for threshold in thresholds:
 
         correct = 0
         for test_sig in signatures_test:
-            prediction = predict_fake(test_sig, signatures_real, threshold, verbose=False)
-            if prediction:
+            # prediction = predict_fake(test_sig, signatures_real, threshold, verbose=False)
+            prediction = predict(test_sig, signatures_real, threshold)
+            if prediction == test_sig.is_fake:
                 correct += 1
-                pred.append(True)
-            else:
-                pred.append(False)
+
+            pred.append(prediction)
 
         accuracy = (correct / len(signatures_test)) * 100
         print('User: {0}, Average Accuracy: {1:.2f}%'.format(i, accuracy))
 
-##### evaluation #####
+    ##### evaluation #####
 
     # precision and recall
     precision = skl.precision_score(gt, pred)
@@ -63,5 +63,5 @@ APs.append(AP)
 print("Average precision: ", AP)
 
 # mean average precision
-mAP = sum(APs)/len(APs)
+mAP = sum(APs) / len(APs)
 print("Mean average precision: ", mAP)
