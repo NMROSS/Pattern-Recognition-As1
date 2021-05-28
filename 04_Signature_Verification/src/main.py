@@ -11,7 +11,7 @@ num_users = len(users)
 
 # evaluation variables
 gt = list(read_gt().values())
-thresholds = np.arange(start=1.5, stop=9, step=0.5)
+thresholds = np.arange(start=5, stop=20, step=0.5)
 precisions = []
 recalls = []
 APs = []
@@ -20,6 +20,7 @@ APs = []
 for threshold in thresholds:
     pred = []
     print("Calclating for threshold: ", threshold)
+    accuracies = []
     for i in range(0, num_users):
         signatures_real = users[i].signatures
         signatures_test = test[i].signatures
@@ -34,7 +35,8 @@ for threshold in thresholds:
             pred.append(prediction)
 
         accuracy = (correct / len(signatures_test)) * 100
-        print('User: {0}, Average Accuracy: {1:.2f}%'.format(i, accuracy))
+        accuracies.append(accuracy)
+#        print('User: {0}, Average Accuracy: {1:.2f}%'.format(i, accuracy))
 
     ##### evaluation #####
 
@@ -43,8 +45,10 @@ for threshold in thresholds:
     recall = skl.recall_score(gt, pred)
     precisions.append(precision)
     recalls.append(recall)
-    print("Precision: ", precision)
-    print("Recall: ", recall)
+    print("Precision: {:.2f}%".format(precision*100))
+    print("Recall: {:.2f}%".format(recall*100))
+    print("Accuracy: {:.2f}%".format(np.average(accuracies, axis=0)))
+    print("\n")
 
 # precision-recall curve
 matplotlib.pyplot.plot(recalls, precisions, linewidth=4, color="red", zorder=0)
@@ -52,16 +56,3 @@ matplotlib.pyplot.xlabel("Recall", fontsize=12, fontweight='bold')
 matplotlib.pyplot.ylabel("Precision", fontsize=12, fontweight='bold')
 matplotlib.pyplot.title("Precision-Recall Curve", fontsize=15, fontweight="bold")
 matplotlib.pyplot.show()
-
-# average precision
-precisions.append(1)
-recalls.append(0)
-precisions_np = np.array(precisions)
-recalls_np = np.array(recalls)
-AP = np.sum((recalls_np[:-1] - recalls_np[1:]) * precisions_np[:-1])
-APs.append(AP)
-print("Average precision: ", AP)
-
-# mean average precision
-mAP = sum(APs) / len(APs)
-print("Mean average precision: ", mAP)

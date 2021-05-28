@@ -104,8 +104,14 @@ class Signature:
         Returns selected feature combinations e.g. (x, y) OR (vx, vy, pressure)
         Values are normalised
         """
-        
-        return minmax_scale(self.x, feature_range=(-1, 1)), minmax_scale(self.y, feature_range=(-1, 1))
+
+        # return minmax_scale(self.x, feature_range=(-1, 1)), minmax_scale(self.y, feature_range=(-1, 1))
+        # return minmax_scale(self.x, feature_range=(-1, 1)), minmax_scale(self.y, feature_range=(-1, 1)), \
+        #       minmax_scale(self.pressure, feature_range=(-1, 1))
+        # return minmax_scale(self.x, feature_range=(-1, 1)), minmax_scale(self.y, feature_range=(-1, 1)), \
+        #    minmax_scale(self.azimuth, feature_range=(-1, 1))
+        return minmax_scale(self.x, feature_range=(-1, 1)), minmax_scale(self.y, feature_range=(-1, 1)), \
+               minmax_scale(self.pressure, feature_range=(-1, 1)), minmax_scale(self.azimuth, feature_range=(-1, 1))
 
 
 class SignatureDTW:
